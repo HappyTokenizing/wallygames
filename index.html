@@ -460,9 +460,9 @@ noscript a{display:block}
       <a href="https://wallycozy.vercel.app">&#9654; Wally World</a>
       <a href="https://wallyfighter.vercel.app">&#9654; Smackdown</a>
       <a href="https://wallyrpg.vercel.app">&#9654; Wally RPG</a>
-      <span>Mint 'Em All — in development</span><br>
-      <span>Wally Tycoon — in development</span><br>
-      <span>Wally Skater — in development</span>
+      <a href="https://wallymintemall.vercel.app">&#9654; Mint 'Em All — in development</a>
+      <a href="https://wallytycoon.vercel.app">&#9654; Wally Tycoon — in development</a>
+      <a href="https://wallyskater.vercel.app">&#9654; Wally Skater — in development</a>
     </div>
   </noscript>
 
@@ -564,7 +564,7 @@ function setSel(i,announce){
   infoDesc.textContent=g.desc;
   $("info").classList.toggle("dev",!!g.dev);
   $("infoPlay").textContent=g.dev?"IN DEVELOPMENT · COMING SOON":"▶\u00a0PLAY\u00a0(A)";
-  if(announce!==false) say("Selected "+g.name+". "+g.desc+(g.dev?" In development. Coming soon.":" Press Enter to play."));
+  if(announce!==false) say("Selected "+g.name+". "+g.desc+(g.dev?" In development. Press Enter to play.":" Press Enter to play."));
 }
 function moveSel(dir){
   if(state!=="select") return;
@@ -667,7 +667,6 @@ function toSelect(){
 function playSelected(){
   if(state!=="select") return;
   var g=GAMES[sel];
-  if(g.dev){ say(g.name+" is in development. Coming soon."); return; }
   window.open(g.url,"_blank","noopener");   /* open inside the user gesture */
   S.launch();
   launchName.textContent="LOADING "+g.name;
