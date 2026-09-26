@@ -168,6 +168,8 @@ a{color:var(--orange-hot)}
 }
 .tile img{width:90%;max-height:64%;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 3px 0 rgba(0,0,0,.45))}
 .tile .nm{font-size:clamp(6px,1.35vw,7.5px);color:#9DB0A9;letter-spacing:.5px;text-align:center;line-height:1.5}
+.tile.dev img{filter:grayscale(1) drop-shadow(0 3px 0 rgba(0,0,0,.45))}
+.tile .devBadge{position:absolute;top:4px;right:5px;padding:3px 4px;font-size:7px;color:#0B0F0E;background:#F2B33D}
 .tile .no{position:absolute;top:4px;left:5px;font-size:6px;color:#54655F}
 .tile.sel{border-color:var(--phos);background:#1A120C;box-shadow:0 0 0 1px var(--phos),0 0 16px rgba(255,120,50,.45),inset 0 0 18px rgba(255,110,50,.14);animation:selPulse 1s ease-in-out infinite}
 .tile.sel .nm{color:var(--tusk)}
@@ -180,6 +182,11 @@ a{color:var(--orange-hot)}
 #infoGenre{display:inline-block;font-size:6.5px;color:#0B0F0E;background:var(--ok);padding:2px 5px;border-radius:2px;margin-left:8px;vertical-align:2px}
 #infoDesc{font-size:clamp(6.5px,1.6vw,8px);color:#9DB0A9;line-height:1.75;margin-top:6px}
 #infoPlay{font-size:clamp(7px,1.8vw,9px);color:var(--tusk);white-space:nowrap;animation:blink 1.2s steps(2) infinite}
+
+#info.dev{flex-wrap:wrap}
+#info.dev .meta{flex-basis:100%}
+#info.dev #infoPlay{display:flex;align-items:center;gap:8px;font-size:clamp(6px,1.5vw,8px);color:#F2B33D;animation:none;white-space:normal;line-height:1.5}
+#info.dev #infoPlay::before{content:"";width:42px;height:12px;flex:none;background:repeating-linear-gradient(135deg,#F2B33D 0 7px,transparent 7px 14px)}
 
 /* launch overlay */
 #launch{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(8,11,10,.94)}
@@ -464,11 +471,11 @@ noscript a{display:block}
     <div class="ns">
       <b>The cabinet needs JavaScript — but the games don't.</b>
       <a href="https://wallycozy.vercel.app">&#9654; Wally World</a>
-      <a href="https://wallyfighter.vercel.app">&#9654; Wally Smackdown</a>
-      <a href="https://wallytycoon.vercel.app">&#9654; Wally Tycoon</a>
-      <a href="https://wallymintemall.vercel.app">&#9654; Wally Mint 'Em All</a>
+      <a href="https://wallyfighter.vercel.app">&#9654; Smackdown</a>
       <a href="https://wallyrpg.vercel.app">&#9654; Wally RPG</a>
-      <a href="https://wallyskater.vercel.app">&#9654; Wally Skater</a>
+      <span>Mint 'Em All — in development</span><br>
+      <span>Wally Tycoon — in development</span><br>
+      <span>Wally Skater — in development</span>
     </div>
   </noscript>
 
@@ -491,11 +498,11 @@ var ICONS = {
 
 var GAMES = [
   {name:"WALLY WORLD",     genre:"COZY",      icon:"ICON1", url:"https://wallycozy.vercel.app",      desc:"Cozy collect-a-thon. Gather tokens, bring the world onchain."},
-  {name:"WALLY SMACKDOWN", genre:"FIGHTER",   icon:"ICON2", url:"https://wallyfighter.vercel.app",   desc:"Take on the baddest memes in crypto. Trunk beats hype."},
-  {name:"WALLY TYCOON",    genre:"TYCOON",    icon:"ICON3", url:"https://wallytycoon.vercel.app",    desc:"Zone it, fund it, mint it. Build the greatest city ever."},
-  {name:"MINT 'EM ALL",    genre:"COLLECTOR", icon:"ICON4", url:"https://wallymintemall.vercel.app", desc:"Tame wild assets around the world and mint every last one."},
+  {name:"SMACKDOWN",       genre:"FIGHTER",   icon:"ICON2", url:"https://wallyfighter.vercel.app",   desc:"Take on the baddest memes in crypto. Trunk beats hype."},
   {name:"WALLY RPG",       genre:"RPG",       icon:"ICON5", url:"https://wallyrpg.vercel.app",       desc:"Unlock tokenization, quest by quest. Help the whole world."},
-  {name:"WALLY SKATER",    genre:"SKATE",     icon:"ICON6", url:"https://wallyskater.vercel.app",    desc:"Grab a deck and shred every corner of crypto land."}
+  {name:"MINT 'EM ALL",    genre:"COLLECTOR", icon:"ICON4", url:"https://wallymintemall.vercel.app", dev:true, desc:"Tame wild assets around the world and mint every last one."},
+  {name:"WALLY TYCOON",    genre:"TYCOON",    icon:"ICON3", url:"https://wallytycoon.vercel.app",    dev:true, desc:"Zone it, fund it, mint it. Build the greatest city ever."},
+  {name:"WALLY SKATER",    genre:"SKATE",     icon:"ICON6", url:"https://wallyskater.vercel.app",    dev:true, desc:"Grab a deck and shred every corner of crypto land."}
 ];
 
 /* ---------- tiny synth ---------- */
@@ -550,12 +557,12 @@ function setCredits(n){
 /* ---------- build select grid ---------- */
 GAMES.forEach(function(g,i){
   var b=document.createElement("button");
-  b.className="tile"; b.type="button"; b.setAttribute("role","option");
-  b.setAttribute("aria-label", g.name+", "+g.genre+". "+g.desc);
+  b.className="tile"+(g.dev?" dev":""); b.type="button"; b.setAttribute("role","option");
+  b.setAttribute("aria-label", g.name+", "+g.genre+(g.dev?", in development. ":". ")+g.desc);
   b.dataset.i=i; b.tabIndex=-1;
   b.innerHTML='<span class="no">0'+(i+1)+'</span>'+
     '<img alt="" src="'+ICONS[g.icon]+'">'+
-    '<span class="nm">'+g.name+'</span>';
+    '<span class="nm">'+g.name+'</span>'+(g.dev?'<span class="devBadge" aria-hidden="true">DEV</span>':'');
   b.addEventListener("mouseenter",function(){ if(state==="select"&&sel!==i){ setSel(i,false); } });
   b.addEventListener("click",function(){ if(state!=="select")return; if(sel!==i){ setSel(i,true);} playSelected(); });
   grid.appendChild(b); tiles.push(b);
@@ -568,7 +575,9 @@ function setSel(i,announce){
   infoName.textContent=g.name;
   infoGenre.textContent=g.genre;
   infoDesc.textContent=g.desc;
-  if(announce!==false) say("Selected "+g.name+". "+g.desc+" Press Enter to play.");
+  $("info").classList.toggle("dev",!!g.dev);
+  $("infoPlay").textContent=g.dev?"IN DEVELOPMENT · COMING SOON":"▶\u00a0PLAY\u00a0(A)";
+  if(announce!==false) say("Selected "+g.name+". "+g.desc+(g.dev?" In development. Coming soon.":" Press Enter to play."));
 }
 function moveSel(dir){
   if(state!=="select") return;
@@ -671,6 +680,7 @@ function toSelect(){
 function playSelected(){
   if(state!=="select") return;
   var g=GAMES[sel];
+  if(g.dev){ say(g.name+" is in development. Coming soon."); return; }
   window.open(g.url,"_blank","noopener");   /* open inside the user gesture */
   S.launch();
   buddy.classList.remove("hop"); void buddy.offsetWidth; buddy.classList.add("hop");
